@@ -2,6 +2,8 @@
 
 The format identifier is `studio.character/v1`. Its executable definition is the Zod schema in `src/features/characters/document.ts`. It has no legacy rig or layer manifest dependency.
 
+The built-in Sovia example uses this same format with the reserved ID `e546d263-8121-4766-b034-a617ab9f619f`. Its `readOnly` library flag is response metadata, not a stored character field. Saving the example creates a new UUID-backed project; exported example archives can also be imported as independent editable projects.
+
 Local project layout:
 
 ```text

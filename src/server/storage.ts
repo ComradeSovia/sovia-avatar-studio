@@ -10,6 +10,8 @@ import {
   FORMAT,
   type Landmarks,
 } from "@/features/characters/document";
+import { DEFAULT_EXAMPLE_ID } from "@/features/characters/example";
+import { getExampleArtwork, getExampleDocument } from "./example";
 export const ROOT = resolve(
   /* turbopackIgnore: true */ process.env.STUDIO_DATA_DIR ?? "projects/studio-v1",
 );
@@ -49,6 +51,7 @@ async function safeRead(path: string) {
   return readFile(path);
 }
 export async function getCharacter(id: string) {
+  if (id === DEFAULT_EXAMPLE_ID) return getExampleDocument();
   const p = await directory(id);
   const bytes = await safeRead(join(p, "character.json"));
   if (bytes.length > 65536) throw new StudioError("The character document is too large.", 400);
@@ -57,6 +60,7 @@ export async function getCharacter(id: string) {
   return doc;
 }
 export async function getArtwork(id: string) {
+  if (id === DEFAULT_EXAMPLE_ID) return getExampleArtwork();
   return safeRead(join(await directory(id), "portrait.png"));
 }
 export async function listCharacters(): Promise<CharacterSummary[]> {
@@ -72,7 +76,19 @@ export async function listCharacters(): Promise<CharacterSummary[]> {
       /* Corrupt entries do not hide healthy projects. */
     }
   }
-  return result.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  const example = getExampleDocument();
+  return [
+    {
+      id: example.id,
+      name: example.name,
+      updatedAt: example.updatedAt,
+      revision: example.revision,
+      readOnly: true,
+    },
+    ...result
+      .filter((item) => item.id !== DEFAULT_EXAMPLE_ID)
+      .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)),
+  ];
 }
 export function inspectPng(bytes: Uint8Array) {
   if (
@@ -145,6 +161,8 @@ export async function createCharacter(
 }
 const pending = new Map<string, Promise<unknown>>();
 export async function saveCharacter(id: string, input: unknown) {
+  if (id === DEFAULT_EXAMPLE_ID)
+    throw new StudioError("Create an editable copy before saving the built-in example.", 403);
   const previous = pending.get(id) ?? Promise.resolve();
   const task = previous
     .catch(() => {})
@@ -177,4 +195,15 @@ export async function saveCharacter(id: string, input: unknown) {
   } finally {
     if (pending.get(id) === task) pending.delete(id);
   }
+}
+export async function copyExample(input: unknown) {
+  const doc = characterSchema.parse(input);
+  if (doc.id !== DEFAULT_EXAMPLE_ID || doc.revision !== 0)
+    throw new StudioError("Invalid example document.");
+  return createCharacter(
+    doc.name === "Sovia" ? "Sovia copy" : doc.name,
+    doc.landmarks,
+    await getExampleArtwork(),
+    doc,
+  );
 }

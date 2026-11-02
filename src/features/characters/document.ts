@@ -62,7 +62,9 @@ export type Point = z.infer<typeof pointSchema>;
 export type Landmarks = z.infer<typeof landmarksSchema>;
 export type Character = z.infer<typeof characterSchema>;
 export type Motion = z.infer<typeof motionSchema>;
-export type CharacterSummary = Pick<Character, "id" | "name" | "updatedAt" | "revision">;
+export type CharacterSummary = Pick<Character, "id" | "name" | "updatedAt" | "revision"> & {
+  readOnly?: boolean;
+};
 export const defaults: Motion = { yaw: 14, pitch: 9, blink: true, breathe: true };
 export function centre(points: Point[]): Point {
   return {

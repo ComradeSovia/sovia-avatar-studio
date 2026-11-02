@@ -24,6 +24,8 @@ npm start
 
 ## Create a character
 
+Sovia is bundled as the default example. Select **Open Sovia example** on the home page to preview her immediately. Select **Save a copy** to create an editable local project; the bundled example remains unchanged. The approved example uses the same independent character format as your own work.
+
 1. Select **New character** in the library and choose a transparent PNG, up to 20 MB.
 2. Trace each eye with at least four points. Use the zoom controls for details and drag points to refine their positions.
 3. Mark the mouth center, chin, neck pivot, and crown.
@@ -62,6 +64,6 @@ Read the [architecture](docs/architecture.md), [character format](docs/character
 
 ## Privacy and licensing
 
-Keep personal artwork and derived files in ignored `projects/`. Keep scratch tools, local backups, and logs in ignored `work/`. Never commit or upload personal character resources. User-created names and private artwork are preserved as user data, regardless of their language.
+Keep personal artwork and derived files in ignored `projects/`. Keep scratch tools, local backups, and logs in ignored `work/`. The owner explicitly approved the Sovia portrait and reviewed example document in `public/examples/sovia/` for publication as the default example. No other personal projects, generated variants, or trial files are included. User-created names and private artwork are preserved as user data, regardless of their language.
 
 See [LICENSE](LICENSE) and [third-party notices](THIRD_PARTY_NOTICES.md). Technical references: [Next.js](https://nextjs.org/docs/app/getting-started/installation), [shadcn/ui](https://ui.shadcn.com/docs/installation/next), and [Biome](https://biomejs.dev/guides/getting-started/).

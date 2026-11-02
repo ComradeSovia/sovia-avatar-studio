@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CreateCharacter } from "./create-character";
 import { artworkUrl, type CharacterSummary } from "./document";
+import { DEFAULT_EXAMPLE_URL } from "./example";
 export function Library() {
   const [items, setItems] = useState<CharacterSummary[]>([]),
     [loading, setLoading] = useState(true),
@@ -97,31 +98,23 @@ export function Library() {
       </div>
       <section className="intro-card">
         <div>
-          <Badge variant="secondary">From artwork to character</Badge>
-          <h2>One illustration. A new companion.</h2>
+          <Badge variant="secondary">READY TO EXPLORE</Badge>
+          <h2>Meet Sovia. Make her your own.</h2>
           <p>
-            Choose artwork, trace the eyes, and place a few landmarks.
+            Start with a ready-to-use example and explore the movement.
             <br />
-            Then preview and refine the movement at your own pace.
+            Save a copy to make it yours, or create a character from your own artwork.
           </p>
-          <Button variant="outline" onClick={() => setCreating(true)}>
-            Start creating
-            <ArrowUpRight />
+          <Button variant="outline" asChild>
+            <Link href={DEFAULT_EXAMPLE_URL}>
+              Open Sovia example <ArrowUpRight />
+            </Link>
           </Button>
         </div>
         <div className="intro-art" aria-hidden="true">
           <div className="art-orbit orbit-one" />
           <div className="art-orbit orbit-two" />
-          <div className="art-sheet">
-            <span className="art-spark">✦</span>
-            <div className="art-face">
-              <span />
-              <span />
-              <i />
-            </div>
-            <div className="art-body" />
-            <div className="art-tag">HELLO, CHARACTER</div>
-          </div>
+          <img className="intro-character" src="/examples/sovia/portrait.png" alt="" />
           <div className="art-chip">
             <span />
             100% Local workspace
@@ -172,7 +165,7 @@ export function Library() {
                       )}
                     </p>
                   </div>
-                  <Badge variant="outline">Local</Badge>
+                  <Badge variant="outline">{item.readOnly ? "Example" : "Local"}</Badge>
                 </CardContent>
               </Card>
             </Link>

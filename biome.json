@@ -10,6 +10,7 @@
       "src/**",
       "tests/**",
       "e2e/**",
+      "public/examples/**/*.json",
       "*.json",
       "*.ts",
       "*.mjs",

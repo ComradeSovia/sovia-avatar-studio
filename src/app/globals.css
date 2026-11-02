@@ -239,6 +239,16 @@ a:focus-visible {
   position: relative;
   margin-right: 50px;
 }
+.intro-character {
+  position: absolute;
+  width: 190px;
+  height: 265px;
+  object-fit: contain;
+  object-position: top;
+  left: 100px;
+  top: -10px;
+  filter: drop-shadow(0 8px 12px #46594615);
+}
 .art-sheet {
   position: absolute;
   width: 168px;

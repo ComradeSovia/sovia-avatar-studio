@@ -1,12 +1,13 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import { mkdir, rm, writeFile } from "node:fs/promises";
+import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { after, test } from "node:test";
 import { strToU8, zipSync } from "fflate";
 import { deformPoint, neutral } from "@/engine/deformation";
 import { packCharacter, unpackCharacter } from "@/features/characters/archive";
 import { characterSchema, FORMAT, landmarksSchema } from "@/features/characters/document";
+import { DEFAULT_EXAMPLE_ID } from "@/features/characters/example";
 import { fixturePng, marks } from "./fixture";
 
 const root = resolve("projects", `.tests-${randomUUID()}`);
@@ -18,6 +19,34 @@ after(async () => {
     root.startsWith(`${resolve("projects")}\\`) || root.startsWith(`${resolve("projects")}/`),
   );
   await rm(root, { recursive: true, force: true });
+});
+test("default example is available without creating a private project and rejects direct saves", async () => {
+  const items = await store.listCharacters();
+  assert.equal(items[0].id, DEFAULT_EXAMPLE_ID);
+  assert.equal(items[0].readOnly, true);
+  assert.deepEqual(await readdir(root), []);
+  const doc = await store.getCharacter(DEFAULT_EXAMPLE_ID);
+  const image = await store.getArtwork(DEFAULT_EXAMPLE_ID);
+  assert.equal(doc.name, "Sovia");
+  assert.deepEqual(store.inspectPng(image), doc.artwork);
+  await assert.rejects(
+    store.saveCharacter(DEFAULT_EXAMPLE_ID, { ...doc, name: "Changed example" }),
+    { status: 403 },
+  );
+  assert.equal((await store.getCharacter(DEFAULT_EXAMPLE_ID)).name, "Sovia");
+});
+test("saving example edits creates a separate editable project and preserves the bundle", async () => {
+  const original = await store.getCharacter(DEFAULT_EXAMPLE_ID);
+  const copy = await store.copyExample({ ...original, motion: { ...original.motion, yaw: 10 } });
+  assert.notEqual(copy.id, DEFAULT_EXAMPLE_ID);
+  assert.equal(copy.name, "Sovia copy");
+  assert.equal(copy.motion.yaw, 10);
+  assert.equal(copy.revision, 0);
+  await store.saveCharacter(copy.id, { ...copy, name: "My character" });
+  assert.equal((await store.getCharacter(copy.id)).name, "My character");
+  assert.deepEqual(await store.getCharacter(DEFAULT_EXAMPLE_ID), original);
+  assert.deepEqual(await store.getArtwork(copy.id), await store.getArtwork(DEFAULT_EXAMPLE_ID));
+  await assert.rejects(store.copyExample({ ...original, id: randomUUID() }));
 });
 test("independent document creation and portable archive round trip", async () => {
   const png = fixturePng(),

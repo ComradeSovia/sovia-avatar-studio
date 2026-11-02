@@ -13,6 +13,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { neutral, type Pose } from "@/engine/deformation";
 import { artworkUrl, type Character, characterSchema } from "@/features/characters/document";
+import { DEFAULT_EXAMPLE_ID } from "@/features/characters/example";
 import { LandmarkCanvas, type LandmarkKey, landmarkSteps } from "./landmark-canvas";
 import { Preview } from "./preview";
 
@@ -34,6 +36,8 @@ const poseControls = [
   { key: "mouth", label: "Mouth openness", min: 0 },
 ] as const;
 export function Workspace({ id }: { id: string }) {
+  const router = useRouter();
+  const isExample = id === DEFAULT_EXAMPLE_ID;
   const [doc, setDoc] = useState<Character | null>(null),
     [saved, setSaved] = useState(""),
     [error, setError] = useState(""),
@@ -80,8 +84,8 @@ export function Workspace({ id }: { id: string }) {
       const result = characterSchema.safeParse(doc);
       if (!result.success)
         throw new Error(result.error.issues[0]?.message ?? "Check the landmarks.");
-      const r = await fetch(`/api/characters/${id}`, {
-          method: "PUT",
+      const r = await fetch(`/api/characters/${id}${isExample ? "/copy" : ""}`, {
+          method: isExample ? "POST" : "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(result.data),
         }),
@@ -91,6 +95,7 @@ export function Workspace({ id }: { id: string }) {
       setDoc(next);
       setSaved(JSON.stringify(next));
       setNote("Saved locally");
+      if (isExample) router.push(`/characters/${next.id}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Save failed.");
     } finally {
@@ -139,7 +144,7 @@ export function Workspace({ id }: { id: string }) {
             <span>
               {doc.artwork.width} × {doc.artwork.height} ·{" "}
               <span className={dirty ? "unsaved" : ""}>
-                {dirty ? "Unsaved changes" : "All changes saved"}
+                {dirty ? "Unsaved changes" : isExample ? "Built-in example" : "All changes saved"}
               </span>
             </span>
           </div>
@@ -156,12 +161,18 @@ export function Workspace({ id }: { id: string }) {
             <Download />
             Export character
           </Button>
-          <Button onClick={() => void save()} disabled={!dirty || busy}>
+          <Button onClick={() => void save()} disabled={(!dirty && !isExample) || busy}>
             {busy ? <LoaderCircle className="animate-spin" /> : dirty ? <Save /> : <Check />}
-            {busy ? "Saving…" : "Save changes"}
+            {busy ? "Saving…" : isExample ? "Save a copy" : "Save changes"}
           </Button>
         </div>
       </div>
+      {isExample && (
+        <p className="save-note">
+          Explore Sovia, adjust the landmarks, and save your own copy. The built-in example stays
+          unchanged.
+        </p>
+      )}
       <div className="editor-toolbar">
         <Tabs value={mode} onValueChange={setMode}>
           <TabsList>
