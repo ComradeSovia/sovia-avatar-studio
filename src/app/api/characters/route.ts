@@ -1,5 +1,6 @@
 import { unpackCharacter } from "@/features/characters/archive";
 import { landmarksSchema } from "@/features/characters/document";
+import { MAX_ARCHIVE_BYTES } from "@/features/characters/resources";
 import { boundedBody, checkWrite, failure } from "@/server/http";
 import { createCharacter, listCharacters, StudioError } from "@/server/storage";
 export const runtime = "nodejs";
@@ -13,7 +14,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     checkWrite(request);
-    const bytes = await boundedBody(request);
+    const bytes = await boundedBody(request, MAX_ARCHIVE_BYTES);
     if (request.headers.get("content-type") === "application/x-avatar-studio") {
       let data: ReturnType<typeof unpackCharacter>;
       try {
@@ -27,6 +28,7 @@ export async function POST(request: Request) {
           data.document.landmarks,
           data.image,
           data.document,
+          data.assets,
         ),
         { status: 201 },
       );

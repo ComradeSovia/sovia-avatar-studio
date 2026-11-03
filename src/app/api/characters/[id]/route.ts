@@ -1,3 +1,4 @@
+import { MAX_DOCUMENT_BYTES } from "@/features/characters/resources";
 import { boundedBody, checkWrite, failure } from "@/server/http";
 import { getCharacter, saveCharacter } from "@/server/storage";
 
@@ -15,7 +16,7 @@ export async function GET(_: Request, context: Context) {
 export async function PUT(request: Request, context: Context) {
   try {
     checkWrite(request);
-    const bytes = await boundedBody(request, 65536);
+    const bytes = await boundedBody(request, MAX_DOCUMENT_BYTES);
     return Response.json(
       await saveCharacter((await context.params).id, JSON.parse(bytes.toString())),
     );

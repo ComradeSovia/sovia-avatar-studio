@@ -1,5 +1,7 @@
 import { type Character, centre, type Point } from "@/features/characters/document";
 import { clamp, deformPoint, type Pose } from "./deformation";
+import { createHairDynamics, type HairDynamics } from "./hair";
+import { type PartImages, paintResourceScene } from "./scene";
 
 const vertex = `attribute vec2 a_position; attribute vec2 a_uv; varying vec2 v_uv; void main(){gl_Position=vec4(a_position.x*2.0-1.0,1.0-a_position.y*2.0,0.0,1.0);v_uv=a_uv;}`;
 const fragment = `precision mediump float; uniform sampler2D u_image; varying vec2 v_uv; void main(){gl_FragColor=texture2D(u_image,v_uv);}`;
@@ -34,10 +36,12 @@ export class AvatarRenderer {
   private count = 0;
   private lastTexture = "";
   private skin: string;
+  private hair: HairDynamics;
   constructor(
     private canvas: HTMLCanvasElement,
     private image: HTMLImageElement,
     private doc: Character,
+    private partImages: PartImages = new Map(),
   ) {
     const gl = canvas.getContext("webgl", {
       alpha: true,
@@ -98,6 +102,7 @@ export class AvatarRenderer {
     const ctx = this.surface.getContext("2d", { willReadFrequently: true });
     if (!ctx) throw new Error("Could not create an image canvas.");
     this.ctx = ctx;
+    this.hair = createHairDynamics(doc, partImages);
     ctx.drawImage(image, 0, 0, this.surface.width, this.surface.height);
     const samples: number[][] = [],
       m = doc.landmarks;
@@ -125,20 +130,21 @@ export class AvatarRenderer {
   }
   setDocument(doc: Character) {
     this.doc = doc;
+    this.hair = createHairDynamics(doc, this.partImages);
     this.lastTexture = "";
   }
   private expressions(pose: Pose) {
-    const key = `${Math.round(pose.eyes * 40)}:${Math.round(pose.mouth * 30)}`;
+    const key = `${Math.round(pose.eyes * 40)}:${Math.round(pose.mouth * 30)}:${pose.mood}:${pose.mouthShape}`;
     if (key === this.lastTexture) return;
     this.lastTexture = key;
     const ctx = this.ctx,
       w = this.surface.width,
       h = this.surface.height,
       m = this.doc.landmarks;
-    ctx.clearRect(0, 0, w, h);
-    ctx.drawImage(this.image, 0, 0, w, h);
+    const handled = paintResourceScene(ctx, this.image, this.doc, this.partImages, pose);
     if (pose.eyes < 0.98)
       for (const eye of [m.leftEye, m.rightEye]) {
+        if (handled[eye === m.leftEye ? "left-eye" : "right-eye"]) continue;
         const center = centre(eye),
           xs = eye.map((p) => p.x * w),
           ys = eye.map((p) => p.y * h),
@@ -175,7 +181,7 @@ export class AvatarRenderer {
           ctx.stroke();
         }
       }
-    if (pose.mouth > 0.04) {
+    if (pose.mouth > 0.04 && !handled.mouth) {
       const d = Math.abs(centre(m.rightEye).x - centre(m.leftEye).x) * w,
         rx = d * 0.12,
         ry = rx * (0.15 + pose.mouth * 0.9),
@@ -203,9 +209,10 @@ export class AvatarRenderer {
       this.surface,
     );
   }
-  draw(pose: Pose, time: number) {
+  draw(pose: Pose, time: number, focusFace = false) {
     const gl = this.gl;
     this.expressions(pose);
+    this.hair.update(this.doc, time);
     const ratio = Math.min(window.devicePixelRatio || 1, 2),
       width = Math.round(this.canvas.clientWidth * ratio),
       height = Math.round(this.canvas.clientHeight * ratio);
@@ -218,13 +225,22 @@ export class AvatarRenderer {
     gl.clear(gl.COLOR_BUFFER_BIT);
     const imageAspect = this.doc.artwork.width / this.doc.artwork.height,
       viewAspect = width / height,
-      sx = Math.min(0.9, (0.9 * imageAspect) / viewAspect),
-      sy = Math.min(0.9, (0.9 * viewAspect) / imageAspect),
+      sy = focusFace
+        ? 0.86 / Math.max(0.15, this.doc.landmarks.neck.y - this.doc.landmarks.crown.y)
+        : Math.min(0.9, (0.9 * viewAspect) / imageAspect),
+      sx = focusFace
+        ? (sy * imageAspect) / viewAspect
+        : Math.min(0.9, (0.9 * imageAspect) / viewAspect),
+      cx = focusFace
+        ? (centre(this.doc.landmarks.leftEye).x + centre(this.doc.landmarks.rightEye).x) / 2
+        : 0.5,
+      cy = focusFace ? (this.doc.landmarks.crown.y + this.doc.landmarks.neck.y) / 2 : 0.5,
       positions = new Float32Array(this.points.length * 2);
     this.points.forEach((p, i) => {
       const q = deformPoint(p, this.doc, pose, time);
-      positions[i * 2] = 0.5 + (q.x - 0.5) * sx;
-      positions[i * 2 + 1] = 0.5 + (q.y - 0.5) * sy;
+      const hair = this.hair.offset(p, this.doc);
+      positions[i * 2] = 0.5 + (q.x + hair.x - cx) * sx;
+      positions[i * 2 + 1] = 0.5 + (q.y + hair.y - cy) * sy;
     });
     // biome-ignore lint/correctness/useHookAtTopLevel: WebGL useProgram is not a React hook.
     gl.useProgram(this.program);

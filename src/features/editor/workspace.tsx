@@ -26,6 +26,7 @@ import { neutral, type Pose } from "@/engine/deformation";
 import { artworkUrl, type Character, characterSchema } from "@/features/characters/document";
 import { DEFAULT_EXAMPLE_ID } from "@/features/characters/example";
 import { LandmarkCanvas, type LandmarkKey, landmarkSteps } from "./landmark-canvas";
+import { PartsPanel } from "./parts-panel";
 import { Preview } from "./preview";
 
 const poseControls = [
@@ -184,6 +185,10 @@ export function Workspace({ id }: { id: string }) {
               <Play size={15} />
               Motion preview
             </TabsTrigger>
+            <TabsTrigger value="parts">
+              <SlidersHorizontal size={15} />
+              Layers and expressions
+            </TabsTrigger>
           </TabsList>
         </Tabs>
         <div className="toolbar-caption">
@@ -203,7 +208,7 @@ export function Workspace({ id }: { id: string }) {
       )}
       <fieldset
         disabled={busy}
-        className={`editor-grid ${mode === "preview" ? "preview-mode" : ""}`}
+        className={`editor-grid ${mode === "preview" || mode === "parts" ? "preview-mode" : ""}`}
       >
         <aside className="landmark-panel panel">
           <div className="panel-heading">
@@ -246,11 +251,17 @@ export function Workspace({ id }: { id: string }) {
               maxLength={60}
               onChange={(e) => setDoc({ ...doc, name: e.target.value })}
             />
-            <p>Basic procedural eyes and mouths require no layer extraction.</p>
+            <p>
+              {doc.resources?.parts.length
+                ? "Separated layers and drawn expressions are stored with this character."
+                : "Import part images in Layers and expressions to add drawn detail."}
+            </p>
           </div>
         </aside>
         <section className="main-stage panel">
-          {mode === "mark" ? (
+          {mode === "parts" ? (
+            <PartsPanel document={doc} onChange={setDoc} readOnly={isExample} />
+          ) : mode === "mark" ? (
             <>
               <div className="panel-heading">
                 <h2>Artwork and landmarks</h2>
@@ -291,7 +302,7 @@ export function Workspace({ id }: { id: string }) {
             <SlidersHorizontal size={16} />
             <h2>Motion controls</h2>
           </div>
-          {mode === "mark" && (
+          {mode !== "preview" && (
             <Preview document={doc} pose={pose} playing={playing} talking={talking} />
           )}
           <div className="inspector-content">
@@ -350,6 +361,48 @@ export function Workspace({ id }: { id: string }) {
               </div>
             ))}
             <div className="control-divider" />
+            <h3>Drawn expressions</h3>
+            <div className="expression-buttons">
+              {(["neutral", "smile"] as const).map((mood) => (
+                <Button
+                  key={mood}
+                  size="sm"
+                  variant={(pose.mood ?? "neutral") === mood ? "secondary" : "outline"}
+                  aria-pressed={(pose.mood ?? "neutral") === mood}
+                  disabled={
+                    mood === "smile" &&
+                    !doc.resources?.parts.some(
+                      (p) => p.role === "expression" && p.state === "smile" && p.visible,
+                    )
+                  }
+                  onClick={() => setPose({ ...pose, mood })}
+                >
+                  {mood === "neutral" ? "Neutral eyes" : "Smiling eyes"}
+                </Button>
+              ))}
+            </div>
+            <div className="expression-buttons">
+              {(["open", "wide", "round"] as const).map((mouthShape) => (
+                <Button
+                  key={mouthShape}
+                  size="sm"
+                  variant={(pose.mouthShape ?? "open") === mouthShape ? "secondary" : "outline"}
+                  aria-pressed={(pose.mouthShape ?? "open") === mouthShape}
+                  disabled={
+                    mouthShape !== "open" &&
+                    !doc.resources?.parts.some(
+                      (p) => p.channel === "mouth" && p.state === mouthShape && p.visible,
+                    )
+                  }
+                  onClick={() =>
+                    setPose({ ...pose, mouthShape, mouth: Math.max(0.75, pose.mouth) })
+                  }
+                >
+                  {mouthShape[0].toUpperCase() + mouthShape.slice(1)}
+                </Button>
+              ))}
+            </div>
+            <div className="control-divider" />
             <h3>Motion range</h3>
             {(["yaw", "pitch"] as const).map((key) => (
               <div className="slider-field" key={key}>
@@ -385,8 +438,9 @@ export function Workspace({ id }: { id: string }) {
               />
             </div>
             <p className="inspector-tip">
-              A single image supports limited rotation. Basic blinking may retain original eye
-              lines, and procedural mouths may differ from the artwork style.
+              {doc.resources?.parts.length
+                ? "This preview uses the saved layer images and drawn expression frames. Hair motion is limited to its saved influence mask."
+                : "A single image supports limited rotation. Without drawn frames, eyes and mouths use procedural effects."}
             </p>
           </div>
         </aside>

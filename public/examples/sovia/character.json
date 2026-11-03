@@ -198,5 +198,607 @@
     "pitch": 9,
     "blink": true,
     "breathe": true
+  },
+  "resources": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "foundation",
+        "name": "Skin foundation",
+        "channel": "artwork",
+        "role": "base",
+        "state": "neutral",
+        "image": {
+          "sha256": "74221a8d396fddfae0775614993cb4eb781a01fae8c25ce29751443f606504c2",
+          "width": 941,
+          "height": 1672
+        },
+        "region": {
+          "x": 0,
+          "y": 0,
+          "width": 1,
+          "height": 1
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "hair-influence",
+        "name": "Hair influence mask",
+        "channel": "hair",
+        "role": "mask",
+        "state": "neutral",
+        "image": {
+          "sha256": "9b51e397954d91fe16219a4c7a9f650af0c63193d1b70f9ce2264292b7e3c820",
+          "width": 941,
+          "height": 1672
+        },
+        "region": {
+          "x": 0,
+          "y": 0,
+          "width": 1,
+          "height": 1
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "left-iris",
+        "name": "Left eye white and iris",
+        "channel": "left-eye",
+        "role": "iris",
+        "state": "neutral",
+        "image": {
+          "sha256": "d1a64d122d537dcd78fbb4388b5259ceb9398a36c6dc88964cadfd3cea5b5437",
+          "width": 70,
+          "height": 42
+        },
+        "region": {
+          "x": 0.3793836344314559,
+          "y": 0.20095693779904306,
+          "width": 0.07438894792773645,
+          "height": 0.025119617224880382
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "left-upper-lid",
+        "name": "Left upper eyelid",
+        "channel": "left-eye",
+        "role": "upper-lid",
+        "state": "neutral",
+        "image": {
+          "sha256": "18a799daddec738525fbeda09fcb2572d1cd04dd9885f183383e3d5deec20805",
+          "width": 98,
+          "height": 41
+        },
+        "region": {
+          "x": 0.357066950053135,
+          "y": 0.19617224880382775,
+          "width": 0.10414452709883103,
+          "height": 0.02452153110047847
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "left-lower-lid",
+        "name": "Left lower eyelid",
+        "channel": "left-eye",
+        "role": "lower-lid",
+        "state": "neutral",
+        "image": {
+          "sha256": "156016966146110aec6836e90db81e954c69f6b4e59af98c5910b028c59728c4",
+          "width": 92,
+          "height": 25
+        },
+        "region": {
+          "x": 0.35600425079702447,
+          "y": 0.2117224880382775,
+          "width": 0.09776833156216791,
+          "height": 0.014952153110047847
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "left-crease",
+        "name": "Left eyelid crease",
+        "channel": "left-eye",
+        "role": "crease",
+        "state": "neutral",
+        "image": {
+          "sha256": "7d7de4ef2f07c023038964a5fb8dfde18e36bb996832ae87a50ceffff641d256",
+          "width": 64,
+          "height": 17
+        },
+        "region": {
+          "x": 0.38257173219978746,
+          "y": 0.19497607655502391,
+          "width": 0.06801275239107332,
+          "height": 0.010167464114832535
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "left-closed",
+        "name": "Left closed eye",
+        "channel": "left-eye",
+        "role": "expression",
+        "state": "closed",
+        "image": {
+          "sha256": "498888fee97860e2c39f769298f2bda079dbc442fef49f72be6dfbba23add9d4",
+          "width": 105,
+          "height": 58
+        },
+        "region": {
+          "x": 0.3538788522848034,
+          "y": 0.19497607655502391,
+          "width": 0.11158342189160468,
+          "height": 0.034688995215311005
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "left-half",
+        "name": "Left half-open eye",
+        "channel": "left-eye",
+        "role": "expression",
+        "state": "half",
+        "image": {
+          "sha256": "edcde7d33b0961efeffd0c547edb7137d75e61f23710d44365e9701e28464d2d",
+          "width": 105,
+          "height": 58
+        },
+        "region": {
+          "x": 0.3538788522848034,
+          "y": 0.19497607655502391,
+          "width": 0.11158342189160468,
+          "height": 0.034688995215311005
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "left-smile",
+        "name": "Left smiling eye",
+        "channel": "left-eye",
+        "role": "expression",
+        "state": "smile",
+        "image": {
+          "sha256": "f619c06cca2a5ae47b571e6430aeb784acca66790311c6d4f570b515c353d112",
+          "width": 105,
+          "height": 58
+        },
+        "region": {
+          "x": 0.3538788522848034,
+          "y": 0.19497607655502391,
+          "width": 0.11158342189160468,
+          "height": 0.034688995215311005
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "right-iris",
+        "name": "Right eye white and iris",
+        "channel": "right-eye",
+        "role": "iris",
+        "state": "neutral",
+        "image": {
+          "sha256": "35cb4a94e897d81a733d5fcaabede920797add48667ae3fda9c3b93830702f27",
+          "width": 75,
+          "height": 44
+        },
+        "region": {
+          "x": 0.5292242295430393,
+          "y": 0.16626794258373206,
+          "width": 0.07970244420828905,
+          "height": 0.02631578947368421
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "right-upper-lid",
+        "name": "Right upper eyelid",
+        "channel": "right-eye",
+        "role": "upper-lid",
+        "state": "neutral",
+        "image": {
+          "sha256": "d9d6d82101d97774a9d83611d6753385b90967a60512c2efcef8f36db44e93b8",
+          "width": 93,
+          "height": 50
+        },
+        "region": {
+          "x": 0.5228480340063762,
+          "y": 0.15729665071770335,
+          "width": 0.09883103081827843,
+          "height": 0.029904306220095694
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "right-lower-lid",
+        "name": "Right lower eyelid",
+        "channel": "right-eye",
+        "role": "lower-lid",
+        "state": "neutral",
+        "image": {
+          "sha256": "a5f23086ec7382308028b26f763157032cb7341aab1ed109447ebbcc040256ba",
+          "width": 84,
+          "height": 31
+        },
+        "region": {
+          "x": 0.5249734325185972,
+          "y": 0.17105263157894737,
+          "width": 0.08926673751328375,
+          "height": 0.01854066985645933
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "right-crease",
+        "name": "Right eyelid crease",
+        "channel": "right-eye",
+        "role": "crease",
+        "state": "neutral",
+        "image": {
+          "sha256": "a286f90f1ba9dada94302eb75561eca45d21a04449a734897a7ae9bda00f5c45",
+          "width": 68,
+          "height": 31
+        },
+        "region": {
+          "x": 0.5292242295430393,
+          "y": 0.15490430622009568,
+          "width": 0.07226354941551541,
+          "height": 0.01854066985645933
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "right-closed",
+        "name": "Right closed eye",
+        "channel": "right-eye",
+        "role": "expression",
+        "state": "closed",
+        "image": {
+          "sha256": "347fdfd3489b42e9c6366b7fbc1e032b7f0a6f87129dc3ab2e03d047da242c14",
+          "width": 100,
+          "height": 70
+        },
+        "region": {
+          "x": 0.5175345377258236,
+          "y": 0.15430622009569378,
+          "width": 0.10626992561105207,
+          "height": 0.041866028708133975
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "right-half",
+        "name": "Right half-open eye",
+        "channel": "right-eye",
+        "role": "expression",
+        "state": "half",
+        "image": {
+          "sha256": "3b9ba29ef618aca2ffbd2f7212a2f6bc03ad4cdd1108b10a5a7709a3d416434e",
+          "width": 100,
+          "height": 70
+        },
+        "region": {
+          "x": 0.5175345377258236,
+          "y": 0.15430622009569378,
+          "width": 0.10626992561105207,
+          "height": 0.041866028708133975
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "right-smile",
+        "name": "Right smiling eye",
+        "channel": "right-eye",
+        "role": "expression",
+        "state": "smile",
+        "image": {
+          "sha256": "235c1ea84e6391f06a362f7f8137ff8f3965db5feddf539e0b641b6a1712936a",
+          "width": 100,
+          "height": 70
+        },
+        "region": {
+          "x": 0.5175345377258236,
+          "y": 0.15430622009569378,
+          "width": 0.10626992561105207,
+          "height": 0.041866028708133975
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "mouth-open",
+        "name": "Open mouth",
+        "channel": "mouth",
+        "role": "expression",
+        "state": "open",
+        "image": {
+          "sha256": "821ae5a4ae13fa19eda9b6b00bfd8694348d04b0ca57b956ad4430b6d55026df",
+          "width": 55,
+          "height": 41
+        },
+        "region": {
+          "x": 0.4962805526036132,
+          "y": 0.23205741626794257,
+          "width": 0.05844845908607864,
+          "height": 0.02452153110047847
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "mouth-half",
+        "name": "Half-open mouth",
+        "channel": "mouth",
+        "role": "expression",
+        "state": "half",
+        "image": {
+          "sha256": "955dc0eb41db7ee2545bc77b83b069e956cbe712fb98585e0c02016865ea2b36",
+          "width": 55,
+          "height": 41
+        },
+        "region": {
+          "x": 0.4962805526036132,
+          "y": 0.23205741626794257,
+          "width": 0.05844845908607864,
+          "height": 0.02452153110047847
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "mouth-wide",
+        "name": "Wide mouth",
+        "channel": "mouth",
+        "role": "expression",
+        "state": "wide",
+        "image": {
+          "sha256": "40b0ff9d69088dd2e4590b33bf39655d8244c1afd574de3a2fc91f70cacf42f8",
+          "width": 55,
+          "height": 41
+        },
+        "region": {
+          "x": 0.4962805526036132,
+          "y": 0.23205741626794257,
+          "width": 0.05844845908607864,
+          "height": 0.02452153110047847
+        },
+        "visible": true,
+        "opacity": 1
+      },
+      {
+        "id": "mouth-round",
+        "name": "Round mouth",
+        "channel": "mouth",
+        "role": "expression",
+        "state": "round",
+        "image": {
+          "sha256": "483350a1b0c604faa9075620977d4a553f66e54f25a0e0f243ecb5ae84ea89ed",
+          "width": 55,
+          "height": 41
+        },
+        "region": {
+          "x": 0.4962805526036132,
+          "y": 0.23205741626794257,
+          "width": 0.05844845908607864,
+          "height": 0.02452153110047847
+        },
+        "visible": true,
+        "opacity": 1
+      }
+    ],
+    "hair": {
+      "strength": 0.65,
+      "strands": [
+        {
+          "id": "strand-1",
+          "name": "bang-left",
+          "points": [
+            {
+              "x": 0.3751328374070138,
+              "y": 0.07177033492822966
+            },
+            {
+              "x": 0.36238044633368754,
+              "y": 0.13157894736842105
+            },
+            {
+              "x": 0.357066950053135,
+              "y": 0.17942583732057416
+            },
+            {
+              "x": 0.357066950053135,
+              "y": 0.19916267942583732
+            }
+          ],
+          "radius": 0.05844845908607864,
+          "stiffness": 0.65
+        },
+        {
+          "id": "strand-2",
+          "name": "bang-middle-left",
+          "points": [
+            {
+              "x": 0.4038257173219979,
+              "y": 0.056818181818181816
+            },
+            {
+              "x": 0.41764080765143463,
+              "y": 0.10466507177033493
+            },
+            {
+              "x": 0.4314558979808714,
+              "y": 0.15849282296650719
+            },
+            {
+              "x": 0.45589798087141337,
+              "y": 0.19677033492822968
+            }
+          ],
+          "radius": 0.05844845908607864,
+          "stiffness": 0.65
+        },
+        {
+          "id": "strand-3",
+          "name": "bang-middle-right",
+          "points": [
+            {
+              "x": 0.4399574920297556,
+              "y": 0.05980861244019139
+            },
+            {
+              "x": 0.4569606801275239,
+              "y": 0.11363636363636363
+            },
+            {
+              "x": 0.4771519659936238,
+              "y": 0.16148325358851676
+            },
+            {
+              "x": 0.4782146652497343,
+              "y": 0.19497607655502391
+            }
+          ],
+          "radius": 0.05844845908607864,
+          "stiffness": 0.65
+        },
+        {
+          "id": "strand-4",
+          "name": "bang-right",
+          "points": [
+            {
+              "x": 0.46865037194473963,
+              "y": 0.0687799043062201
+            },
+            {
+              "x": 0.4962805526036132,
+              "y": 0.12260765550239235
+            },
+            {
+              "x": 0.5079702444208289,
+              "y": 0.16148325358851676
+            },
+            {
+              "x": 0.5026567481402763,
+              "y": 0.18839712918660287
+            }
+          ],
+          "radius": 0.05844845908607864,
+          "stiffness": 0.65
+        },
+        {
+          "id": "strand-5",
+          "name": "side-left-outer",
+          "points": [
+            {
+              "x": 0.2975557917109458,
+              "y": 0.10167464114832536
+            },
+            {
+              "x": 0.27098831030818277,
+              "y": 0.17045454545454544
+            },
+            {
+              "x": 0.2731137088204038,
+              "y": 0.24222488038277512
+            },
+            {
+              "x": 0.3230605738575983,
+              "y": 0.2930622009569378
+            }
+          ],
+          "radius": 0.05844845908607864,
+          "stiffness": 0.65
+        },
+        {
+          "id": "strand-6",
+          "name": "side-left-inner",
+          "points": [
+            {
+              "x": 0.32624867162592985,
+              "y": 0.12858851674641147
+            },
+            {
+              "x": 0.3188097768331562,
+              "y": 0.20035885167464115
+            },
+            {
+              "x": 0.3517534537725824,
+              "y": 0.2703349282296651
+            },
+            {
+              "x": 0.42295430393198724,
+              "y": 0.31698564593301437
+            }
+          ],
+          "radius": 0.05844845908607864,
+          "stiffness": 0.65
+        },
+        {
+          "id": "strand-7",
+          "name": "side-right-inner",
+          "points": [
+            {
+              "x": 0.6014877789585548,
+              "y": 0.07775119617224881
+            },
+            {
+              "x": 0.6376195536663124,
+              "y": 0.15251196172248804
+            },
+            {
+              "x": 0.6397449521785334,
+              "y": 0.23026315789473684
+            },
+            {
+              "x": 0.6110520722635494,
+              "y": 0.2900717703349282
+            }
+          ],
+          "radius": 0.05844845908607864,
+          "stiffness": 0.65
+        },
+        {
+          "id": "strand-8",
+          "name": "side-right-outer",
+          "points": [
+            {
+              "x": 0.6461211477151966,
+              "y": 0.09270334928229665
+            },
+            {
+              "x": 0.7003188097768331,
+              "y": 0.15550239234449761
+            },
+            {
+              "x": 0.71413390010627,
+              "y": 0.22129186602870812
+            },
+            {
+              "x": 0.6811902231668437,
+              "y": 0.2619617224880383
+            }
+          ],
+          "radius": 0.05844845908607864,
+          "stiffness": 0.65
+        }
+      ]
+    }
   }
 }

@@ -4,4 +4,4 @@ UI primitives in `src/components/ui/` were generated from the official shadcn/ui
 
 Next.js, React, TypeScript, Biome, Radix, Tailwind CSS, Lucide, Zod, fflate and pngjs remain subject to their respective licenses distributed with the installed npm packages. Their versions are locked in package-lock.json.
 
-The current main branch implements its own character document and rendering code; it does not distribute the earlier runtime or its sample characters. The repository owner explicitly authorized the Sovia portrait and reviewed landmarks as the default example. See `public/examples/sovia/README.md`. No generated expression variants or private trial projects are included.
+The current main branch implements its own character document, resource persistence, composition, and animation code; it does not distribute the earlier runtime or its sample characters. The repository owner authorized the Sovia default example and requested migration of its separated PNG parts, drawn expressions, and reviewed hair guides. See `public/examples/sovia/README.md`. Original generation inputs and private trial projects are excluded.

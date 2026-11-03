@@ -17,6 +17,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CreateCharacter } from "./create-character";
 import { artworkUrl, type CharacterSummary } from "./document";
 import { DEFAULT_EXAMPLE_URL } from "./example";
+import { MAX_ARCHIVE_BYTES } from "./resources";
 export function Library() {
   const [items, setItems] = useState<CharacterSummary[]>([]),
     [loading, setLoading] = useState(true),
@@ -44,8 +45,8 @@ export function Library() {
   }, [load]);
   async function importFile(file?: File) {
     if (!file) return;
-    if (file.size > 24 * 1024 * 1024) {
-      setError("Character archives must be smaller than 24 MB.");
+    if (file.size > MAX_ARCHIVE_BYTES) {
+      setError("Character archives must be smaller than 64 MB.");
       return;
     }
     setImporting(true);

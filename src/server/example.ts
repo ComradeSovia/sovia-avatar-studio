@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { characterSchema } from "@/features/characters/document";
 import { DEFAULT_EXAMPLE_ID } from "@/features/characters/example";
+import { digestSchema, resourceImages, resourcePath } from "@/features/characters/resources";
 import exampleDocument from "../../public/examples/sovia/character.json";
 
 const document = characterSchema.parse(exampleDocument);
@@ -21,4 +22,10 @@ export function getExampleArtwork() {
     },
   );
   return image;
+}
+export async function getExampleAsset(hash: string) {
+  digestSchema.parse(hash);
+  if (!resourceImages(document.resources).some((a) => a.sha256 === hash))
+    throw new Error("Unknown example part image.");
+  return readFile(join(process.cwd(), "public", "examples", "sovia", resourcePath(hash)));
 }

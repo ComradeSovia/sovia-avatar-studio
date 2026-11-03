@@ -1,0 +1,207 @@
+.parts-panel {
+  min-width: 0;
+}
+.parts-intro {
+  padding: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.parts-intro p {
+  font-size: 11px;
+  color: #819187;
+  line-height: 1.8;
+  flex: 1 1 270px;
+}
+.parts-intro button {
+  font-size: 11px;
+}
+.part-filters {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+  padding: 0 14px 12px;
+}
+.part-filters button {
+  font-size: 10px;
+  padding: 5px 9px;
+  height: 28px;
+}
+.part-list {
+  border-block: 1px solid var(--border);
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 7px;
+}
+.part-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
+  padding: 7px 10px;
+  border: 1px solid transparent;
+}
+.part-row.selected {
+  border-color: #c7dfcf;
+  background: #eff6f0;
+}
+.part-pick {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  flex: 1;
+  min-width: 0;
+}
+.part-pick img {
+  width: 58px;
+  height: 55px;
+  object-fit: contain;
+  background: #e9eeeb;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.part-pick > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.part-pick strong {
+  font-size: 11px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.part-pick small {
+  font-size: 9px;
+  color: #93a196;
+}
+.parts-empty {
+  font-size: 12px;
+  color: #8b9c8f;
+  padding: 24px;
+  line-height: 1.9;
+}
+.part-properties {
+  padding: 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.part-properties .control-title {
+  margin-top: 0;
+}
+.part-properties h3 {
+  font-size: 12px;
+  font-weight: 600;
+}
+.part-properties label {
+  font-size: 10px;
+  color: #84968a;
+  gap: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.part-properties input {
+  font-size: 11px;
+  height: 32px;
+}
+.part-properties p,
+.part-properties summary {
+  font-size: 10px;
+  color: #8a9a8f;
+}
+.part-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
+  gap: 10px;
+}
+.part-fields select {
+  width: 100%;
+  border: 1px solid var(--input);
+  border-radius: 6px;
+  padding: 6px 8px;
+  height: 32px;
+  font-size: 11px;
+  color: var(--foreground);
+  background: var(--background);
+}
+.part-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+  font-size: 10px;
+}
+.part-actions button {
+  font-size: 10px;
+}
+.part-actions a {
+  color: var(--primary);
+}
+.part-checksum {
+  word-break: break-all;
+  font-family: monospace;
+  font-size: 8px;
+}
+.part-properties details {
+  max-height: 180px;
+  overflow: auto;
+  line-height: 1.9;
+}
+.expression-buttons {
+  display: flex;
+  gap: 6px;
+  margin: 11px 0;
+}
+.expression-buttons button {
+  font-size: 9px;
+  height: 28px;
+  flex: 1;
+  padding: 4px 7px;
+}
+.parts-panel > .error-message {
+  margin: 14px;
+}
+@media (max-width: 700px) {
+  .editor-toolbar > [data-slot="tabs"] {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .editor-toolbar [data-slot="tabs-list"] {
+    max-width: 100%;
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+  .editor-toolbar [data-slot="tabs-trigger"] {
+    flex: 0 0 auto;
+    padding: 6px 9px;
+    font-size: 10px;
+  }
+  .part-row {
+    padding: 7px 5px;
+  }
+  .part-pick {
+    gap: 8px;
+  }
+  .part-pick img {
+    width: 45px;
+  }
+  .parts-intro {
+    padding: 14px;
+  }
+}
+.framing-button {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 10px;
+  height: 27px;
+  padding: 4px 9px;
+  opacity: 0.85;
+}

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { resourcesSchema } from "./resources";
 export const FORMAT = "studio.character/v1" as const;
 export const pointSchema = z.object({ x: z.number().min(0).max(1), y: z.number().min(0).max(1) });
 const contourSchema = z.array(pointSchema).min(4).max(40);
@@ -57,6 +58,7 @@ export const characterSchema = z.object({
   }),
   landmarks: landmarksSchema,
   motion: motionSchema,
+  resources: resourcesSchema.optional(),
 });
 export type Point = z.infer<typeof pointSchema>;
 export type Landmarks = z.infer<typeof landmarksSchema>;

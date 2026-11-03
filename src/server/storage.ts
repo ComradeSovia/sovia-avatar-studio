@@ -11,7 +11,15 @@ import {
   type Landmarks,
 } from "@/features/characters/document";
 import { DEFAULT_EXAMPLE_ID } from "@/features/characters/example";
-import { getExampleArtwork, getExampleDocument } from "./example";
+import {
+  type AssetFiles,
+  digestSchema,
+  MAX_DOCUMENT_BYTES,
+  MAX_RESOURCE_BYTES,
+  resourceImages,
+  resourcePath,
+} from "@/features/characters/resources";
+import { getExampleArtwork, getExampleAsset, getExampleDocument } from "./example";
 export const ROOT = resolve(
   /* turbopackIgnore: true */ process.env.STUDIO_DATA_DIR ?? "projects/studio-v1",
 );
@@ -54,7 +62,8 @@ export async function getCharacter(id: string) {
   if (id === DEFAULT_EXAMPLE_ID) return getExampleDocument();
   const p = await directory(id);
   const bytes = await safeRead(join(p, "character.json"));
-  if (bytes.length > 65536) throw new StudioError("The character document is too large.", 400);
+  if (bytes.length > MAX_DOCUMENT_BYTES)
+    throw new StudioError("The character document is too large.", 400);
   const doc = characterSchema.parse(JSON.parse(bytes.toString()));
   if (doc.id !== id) throw new StudioError("Character IDs do not match.", 400);
   return doc;
@@ -90,7 +99,7 @@ export async function listCharacters(): Promise<CharacterSummary[]> {
       .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)),
   ];
 }
-export function inspectPng(bytes: Uint8Array) {
+export function inspectPng(bytes: Uint8Array, minDimension = 64) {
   if (
     bytes.length > 20 * 1024 * 1024 ||
     bytes.length < 24 ||
@@ -100,7 +109,13 @@ export function inspectPng(bytes: Uint8Array) {
   const b = Buffer.from(bytes);
   const width = b.readUInt32BE(16),
     height = b.readUInt32BE(20);
-  if (width < 64 || height < 64 || width > 4096 || height > 4096 || width * height > 8_000_000)
+  if (
+    width < minDimension ||
+    height < minDimension ||
+    width > 4096 ||
+    height > 4096 ||
+    width * height > 8_000_000
+  )
     throw new StudioError(
       "Image dimensions must be 64–4096 pixels, with no more than 8 million pixels in total.",
     );
@@ -124,6 +139,7 @@ export async function createCharacter(
   landmarks: Landmarks,
   bytes: Uint8Array,
   template?: Character,
+  assets: AssetFiles = {},
 ) {
   const artwork = inspectPng(bytes),
     now = new Date().toISOString(),
@@ -147,11 +163,17 @@ export async function createCharacter(
     landmarks,
     motion: template?.motion ?? defaults,
   });
+  validateAssetFiles(doc, assets);
   await root();
   const p = join(ROOT, id);
   await mkdir(p);
   try {
     await writeFile(join(p, "portrait.png"), bytes, { flag: "wx" });
+    if (Object.keys(assets).length) {
+      await mkdir(join(p, "assets"));
+      for (const [hash, bytes] of Object.entries(assets))
+        await writeFile(join(p, resourcePath(hash)), bytes, { flag: "wx" });
+    }
     await writeFile(join(p, "character.json"), JSON.stringify(doc, null, 2), { flag: "wx" });
   } catch (e) {
     await rm(p, { recursive: true, force: true });
@@ -173,6 +195,7 @@ export async function saveCharacter(id: string, input: unknown) {
         throw new StudioError("Another window changed this project. Reopen it before saving.", 409);
       if (JSON.stringify(doc.artwork) !== JSON.stringify(current.artwork))
         throw new StudioError("Saving character settings cannot replace the original artwork.");
+      await getAssets(id, doc);
       const next = {
         ...doc,
         createdAt: current.createdAt,
@@ -205,5 +228,61 @@ export async function copyExample(input: unknown) {
     doc.landmarks,
     await getExampleArtwork(),
     doc,
+    await getAssets(DEFAULT_EXAMPLE_ID, doc),
   );
+}
+export function validateAssetFiles(doc: Character, assets: AssetFiles) {
+  const refs = resourceImages(doc.resources);
+  const required = new Set(refs.map((a) => a.sha256));
+  if (Object.keys(assets).some((hash) => !required.has(hash)))
+    throw new StudioError("Unreferenced part images are not accepted.");
+  let size = 0;
+  for (const asset of refs) {
+    const bytes = assets[asset.sha256];
+    if (!bytes) throw new StudioError("A referenced part image is missing.");
+    size += bytes.length;
+    const info = inspectPng(bytes, 1);
+    if (info.sha256 !== asset.sha256 || info.width !== asset.width || info.height !== asset.height)
+      throw new StudioError("A part image does not match its checksum or dimensions.");
+  }
+  if (size > MAX_RESOURCE_BYTES) throw new StudioError("The resource set is too large.");
+}
+export async function getAsset(id: string, hash: string) {
+  digestSchema.parse(hash);
+  const bytes =
+    id === DEFAULT_EXAMPLE_ID
+      ? await getExampleAsset(hash)
+      : await safeRead(join(await assetDirectory(id), `${hash}.png`));
+  if (createHash("sha256").update(bytes).digest("hex") !== hash)
+    throw new StudioError("The part image checksum does not match.");
+  return bytes;
+}
+export async function getAssets(id: string, doc?: Character): Promise<AssetFiles> {
+  const current = doc ?? (await getCharacter(id));
+  const assets: AssetFiles = {};
+  for (const image of resourceImages(current.resources))
+    assets[image.sha256] = await getAsset(id, image.sha256);
+  validateAssetFiles(current, assets);
+  return assets;
+}
+export async function uploadAsset(id: string, bytes: Uint8Array) {
+  if (id === DEFAULT_EXAMPLE_ID)
+    throw new StudioError("Save an editable copy before importing part images.", 403);
+  const image = inspectPng(bytes, 1);
+  const path = join(await assetDirectory(id, true), `${image.sha256}.png`);
+  try {
+    await writeFile(path, bytes, { flag: "wx" });
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code !== "EEXIST") throw e;
+    await getAsset(id, image.sha256);
+  }
+  return { sha256: image.sha256, width: image.width, height: image.height };
+}
+async function assetDirectory(id: string, create = false) {
+  const path = join(await directory(id), "assets");
+  if (create) await mkdir(path, { recursive: true });
+  const entry = await lstat(path);
+  if (!entry.isDirectory() || entry.isSymbolicLink())
+    throw new StudioError("The part image directory must be a regular directory.");
+  return path;
 }

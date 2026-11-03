@@ -46,7 +46,7 @@ These rules apply to this independent repository. Explicit user instructions tak
 - Keep personal images, masks, derived layers, character documents, exports, and review screenshots inside ignored `projects/`.
 - Keep scratch scripts, logs, browser caches, and local backups inside ignored `work/`.
 - Never stage personal character resources or bypass ignore rules. Do not publish private projects, generated variants, or trial files.
-- Explicit exception: the user authorized Sovia as the default published example. Only its approved portrait, normalized example document, and provenance note in `public/examples/sovia/` may be committed and uploaded. This does not authorize any other personal resources or external image processing.
+- Explicit exception: the user authorized Sovia as the default published example and requested migration of its separated parts and expressions. Its approved portrait, normalized document, part PNG assets, hair guides, and provenance note in `public/examples/sovia/` may be committed and uploaded. This does not authorize other private projects, trial files, legacy code, or external image processing.
 - Keep the built-in example read-only. Saving edits creates a private editable copy; never overwrite the bundled example from the UI.
 - Do not add other personal resources to samples, tests, public assets, build artifacts, Git history, or GitHub uploads.
 - Ask before sending any user image to an external image service. Local processing does not imply permission for external processing.

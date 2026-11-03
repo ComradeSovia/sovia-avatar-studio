@@ -5,6 +5,8 @@ export interface Pose {
   tilt: number;
   eyes: number;
   mouth: number;
+  mood?: "neutral" | "smile";
+  mouthShape?: "open" | "wide" | "round";
 }
 export const neutral: Pose = { yaw: 0, pitch: 0, tilt: 0, eyes: 1, mouth: 0 };
 export const clamp = (v: number, min = 0, max = 1) => Math.max(min, Math.min(max, v));
